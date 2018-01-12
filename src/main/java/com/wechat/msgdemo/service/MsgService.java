@@ -1,6 +1,7 @@
 package com.wechat.msgdemo.service;
 
 import com.wechat.msgdemo.entity.AccessToken;
+import com.wechat.msgdemo.entity.Msg;
 
 public interface MsgService {
     /**
@@ -8,7 +9,7 @@ public interface MsgService {
      *
      * @param msg
      */
-    void sendMsg(String msg);
+    boolean sendMsg(Msg msg);
 
-    AccessToken getAccessToken(String appId, String secret);
+
 }

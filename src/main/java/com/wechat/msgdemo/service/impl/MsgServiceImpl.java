@@ -1,10 +1,13 @@
 package com.wechat.msgdemo.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wechat.msgdemo.entity.AccessToken;
+import com.wechat.msgdemo.entity.Msg;
 import com.wechat.msgdemo.service.MsgService;
+import com.wechat.msgdemo.util.BaseUtil;
+import com.wechat.msgdemo.util.GetAccessToken;
 import com.wechat.msgdemo.util.OKHttpUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,41 +21,42 @@ import org.springframework.stereotype.Service;
 @Service
 public class MsgServiceImpl implements MsgService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(MsgServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(MsgServiceImpl.class);
 
-    private final static String ACCESS_TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=CorpID&corpsecret=SECRET";
+    private final static String SEND_MSG_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN";
 
     /**
      *
      * @param msg
      */
     @Override
-    public void sendMsg(String msg) {
+    public boolean sendMsg(Msg msg) {
+        LOGGER.info("===========进入消息发送方法=======================");
+        AccessToken accessToken = GetAccessToken.getAccessToken(BaseUtil.corpId, BaseUtil.secret);
+        String token = JSON.toJSONString(accessToken);
+        StringBuffer sb = new StringBuffer();
+        boolean result = true;
 
-    }
+        sb.append("{");
+        sb.append("\"touser\":" + "\"" + msg.getTouser() + "\",");
+        sb.append("\"toparty\":" + "\"" + msg.getTopatry() + "\",");
+        sb.append("\"totag\":" + "\"" + msg.getTotag() + "\",");
+        sb.append("\"msgtype\":" + "\"" + "text" + "\",");
+        sb.append("\"agentid\":" + "\"" + "21" + "\",");
+        sb.append("\"text\":" + "{");
+        sb.append("\"content\":" + "\"" + msg.getContent() + "\"},");
+        sb.append("\"debug\":" + "\"" + "1" + "\"");
+        sb.append("}");
 
-    @Override
-    public AccessToken getAccessToken(String appId, String secret) {
-        AccessToken accessToken = null;
-        String requestUrl = ACCESS_TOKEN_URL.replace("CordID", appId).replace("SECRET", secret);
-        JSONObject jsonObject = OKHttpUtil.httpGet(requestUrl);
-        //如果请求成功
-        if (null != jsonObject) {
-            try {
-                accessToken = new AccessToken();
-                accessToken.setAccessToken(jsonObject.getString("5_LbPbhB8e4AriH-qXvVKjVCSlMDNgIJLE3dAy4V0eSdU5h34RypMffeuVUne7vLRKsDe401DsocrZTFupyorxSH9s-usx36uRi4z5SqwEFzjnU_zcqZ1chBlZEy36wNeMU7uYZHEO30Fr-2wnSSWgAAABBF"));
-                accessToken.setExpiresin(jsonObject.getIntValue("7200"));
-                LOGGER.info("[ACCESSTOKEN]", "获取ACCESSTOKEN成功:{}", new Object[]{accessToken});
-            } catch (Exception e) {
-                accessToken = null;
-                //获取token失败
-                int errcode = jsonObject.getIntValue("errcode");
-                String errmsg = jsonObject.getString("errmsg");
-                LOGGER.info("[ACCESSTOKEN]", "获取ACCESSTOKEN失败 errcode:{} errmsg:{}", new Object[]{errcode,errmsg});
-            }
+        String data = new String(sb);
+        String url = SEND_MSG_URL.replace("ACCESS_TOKEN", token).replace(" ", "");
+        JSONObject jsonObject = OKHttpUtil.httpPost(url, data);
+        if (0 != (Integer)jsonObject.get("errcode")) {
+            result = false;
+            throw new RuntimeException("通知用户失败");
         }
-        return accessToken;
+        return result;
+
+
     }
-
-
 }

@@ -30,7 +30,7 @@ public class AccessToken {
 
     @Override
     public String toString() {
-        return "AccessToken{" +
+        return "GetAccessToken{" +
                 "accessToken='" + accessToken + '\'' +
                 ", expiresin=" + expiresin +
                 '}';

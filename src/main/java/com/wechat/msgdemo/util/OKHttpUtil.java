@@ -53,6 +53,7 @@ public class OKHttpUtil {
             jsonObject = JSON.parseObject(result);
 
         } catch (IOException e) {
+            //TODO : 规范！！！
             e.printStackTrace();
         }
         return jsonObject;
