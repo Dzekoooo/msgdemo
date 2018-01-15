@@ -1,12 +1,15 @@
 package com.wechat.msgdemo.controller;
 
-import com.wechat.msgdemo.entity.Msg;
-import com.wechat.msgdemo.service.MsgService;
+import com.wechat.msgdemo.entity.TextMsg;
+import com.wechat.msgdemo.service.TextMsgService;
+import com.wechat.msgdemo.util.CreateView;
+import com.wechat.msgdemo.util.PageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
 *@Author: ZhangZhe
@@ -18,20 +21,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class MsgController {
 
-    @Autowired
-    private MsgService msgService;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MsgController.class);
 
-    @RequestMapping("sendmsg")
-    public void tokenMsg() {
-        LOGGER.info("===================进入gettoken========================");
-        Msg msg = new Msg();
-        msg.setTotag("1");
-        msg.setTopatry("2");
-        msg.setTouser("1");
-        msg.setContent("helloworld");
-        boolean result = msgService.sendMsg(msg);
-        System.out.println("result = " + result);
+    @Autowired
+    private TextMsgService textMsgService;
+
+
+    @RequestMapping("sendtext")
+    public ModelAndView tokenMsg(ModelAndView mv, TextMsg textMsg) {
+        LOGGER.info("===================进入sendmsg========================");
+        boolean result = textMsgService.textSendMsg(textMsg);
+        if (result != false) {
+            mv = CreateView.createView(PageUtil.SUCCESS_TEXT, PageUtil.SUCCESS_PAGE);
+            return mv;
+        }
+        mv = CreateView.createView(PageUtil.ERROR_TEXT, PageUtil.ERROR_PAGE);
+        return  mv;
     }
 }
