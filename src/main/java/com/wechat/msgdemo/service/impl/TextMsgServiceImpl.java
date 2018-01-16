@@ -28,7 +28,7 @@ public class TextMsgServiceImpl implements TextMsgService {
     /**
      * 发送消息的接口地址
      */
-    private static String SEND_MSG_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN";
+    private static final String SEND_MSG_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=ACCESS_TOKEN";
 
     /**
      *
@@ -79,7 +79,7 @@ public class TextMsgServiceImpl implements TextMsgService {
      */
     @Override
     public boolean regexCheck(String info) {
-        String pattern = "([a-zA-Z]{1,}[|]*)+([a-zA-Z]{1,})*";
+        String pattern = "(([a-zA-Z]{1,}[|]*)+([a-zA-Z]{1,})* )";
         boolean result = false;
         boolean isMatch = Pattern.matches(pattern, info);
         if (isMatch) {

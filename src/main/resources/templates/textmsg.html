@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>消息发送</title>
+</head>
+<body>
+    <tr>
+        <td th:text = "${message}"></td>
+    </tr>
+    <form action="/sendtext" method="post">
+        目标：<input type="text" name="toUser" required = "required" placeholder="消息接收者"/>
+        注：多个用户用|分隔开，格式 aaa|bbb|ccc<br/>
+        部门：<input type="text" name="toPatry" placeholder="部门"/><br/>
+        标签：<input type="text" name="toTag" placeholder="标签"/><br/>
+        应用：<input type="text" name="agentId" required = "required" placeholder="应用id"/><br/>
+        内容：<input type="text" name="content" required = "required" placeholder="消息内容"/><br/>
+        <input type="submit" value="提交"/>
+    </form>
+</body>
+</html>
