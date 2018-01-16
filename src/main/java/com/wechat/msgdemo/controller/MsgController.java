@@ -30,12 +30,19 @@ public class MsgController {
     @RequestMapping("sendtext")
     public ModelAndView tokenMsg(ModelAndView mv, TextMsg textMsg) {
         LOGGER.info("===================进入sendmsg========================");
-        boolean result = textMsgService.textSendMsg(textMsg);
-        if (result != false) {
-            mv = CreateView.createView(PageUtil.SUCCESS_TEXT, PageUtil.SUCCESS_PAGE);
+        //检验输入格式
+        boolean checkResult = textMsgService.regexCheck(textMsg.getToUser());
+
+        if (checkResult){
+            boolean sendResult = textMsgService.textSendMsg(textMsg);
+            if (sendResult != false) {
+                mv = CreateView.createView(PageUtil.SUCCESS_TEXT, PageUtil.SUCCESS_PAGE);
+                return mv;
+            }
+            mv = CreateView.createView(PageUtil.ERROR_TEXT, PageUtil.ERROR_PAGE);
             return mv;
         }
-        mv = CreateView.createView(PageUtil.ERROR_TEXT, PageUtil.ERROR_PAGE);
+        mv = CreateView.createView(PageUtil.ERROR_INPUT, PageUtil.TEXT_MSG);
         return  mv;
     }
 }

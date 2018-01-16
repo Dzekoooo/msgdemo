@@ -12,10 +12,6 @@ import com.wechat.msgdemo.util.OKHttpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -41,6 +37,7 @@ public class TextMsgServiceImpl implements TextMsgService {
     @Override
     public boolean textSendMsg(TextMsg textMsg) {
         LOGGER.info("===========进入文本消息发送方法=======================");
+
         TextSendResponse tsr = new TextSendResponse();
         boolean result = true;
         AccessToken accessToken = GetAccessToken.getAccessToken(BaseUtil.corpId, BaseUtil.secret);
@@ -51,7 +48,7 @@ public class TextMsgServiceImpl implements TextMsgService {
         sb.append("\"toparty\":" + "\"" + textMsg.getToPatry() + "\",");
         sb.append("\"totag\":" + "\"" + textMsg.getToTag() + "\",");
         sb.append("\"msgtype\":" + "\"" + "text" + "\",");
-        sb.append("\"agentid\":" + "\"" + "1000002" + "\",");
+        sb.append("\"agentid\":" + "\"" + textMsg.getAgentId() + "\",");
         sb.append("\"text\":" + "{");
         sb.append("\"content\":" + "\"" + textMsg.getContent() + "\"},");
         sb.append("\"safe\":" + "\"" + "0" + "\"");
@@ -74,12 +71,17 @@ public class TextMsgServiceImpl implements TextMsgService {
         return result;
     }
 
+    /**
+     * 正则表达是匹配输入用户格式
+     *
+     * @param info
+     * @return
+     */
     @Override
     public boolean regexCheck(String info) {
-        String str = "[a-zA-Z]| + "+" ";
-        String pattern = info;
+        String pattern = "([a-zA-Z]{1,}[|]*)+([a-zA-Z]{1,})*";
         boolean result = false;
-        boolean isMatch = Pattern.matches(str, info);
+        boolean isMatch = Pattern.matches(pattern, info);
         if (isMatch) {
             result = true;
         }

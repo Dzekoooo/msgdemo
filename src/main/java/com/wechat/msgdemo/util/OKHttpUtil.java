@@ -3,7 +3,6 @@ package com.wechat.msgdemo.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import okhttp3.*;
-import java.io.IOException;
 
 /**
 *@Author: ZhangZhe
@@ -28,8 +27,7 @@ public class OKHttpUtil {
             result = response.body().string();
             jsonObject = JSON.parseObject(result);
         } catch (Exception e) {
-            //TODO: !!!规范
-            e.printStackTrace();
+            throw new RuntimeException("httpGet失败");
         }
         return jsonObject;
     }
@@ -52,9 +50,8 @@ public class OKHttpUtil {
             result = response.body().string();
             jsonObject = JSON.parseObject(result);
 
-        } catch (IOException e) {
-            //TODO : 规范！！！
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException("httpPost失败");
         }
         return jsonObject;
     }

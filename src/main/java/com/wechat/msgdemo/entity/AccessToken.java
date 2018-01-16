@@ -1,6 +1,14 @@
 package com.wechat.msgdemo.entity;
 
-public class AccessToken {
+import java.io.Serializable;
+
+/**
+*@Author: ZhangZhe
+*@Description       AccessToken
+*@Date: 2018/1/16
+*/
+
+public class AccessToken implements Serializable{
 
     /**
      * accessToken 连接密钥
